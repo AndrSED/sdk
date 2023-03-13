@@ -1,0 +1,16 @@
+version: '3'
+services:
+      uptime_report:
+        build:
+          context: ./
+          dockerfile: ./uptime_report/Dockerfile
+        restart: always
+        ports:
+          - 8050:8050
+      sankey_diagram:
+        build:
+          context: ./
+          dockerfile: ./sankey/Dockerfile
+        restart: always
+        ports:
+          - 8060:8050
