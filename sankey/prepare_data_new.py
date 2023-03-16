@@ -94,14 +94,15 @@ def load_data(s, start_date, end_date):
     sourse_colors = []
     link_colors = []    # Доделать цвет линков
     labels = prepare_label(s)
-    request = prepare_arch_request([s.channel.index[1]], start_date, end_date)
-    arch_data = getting_arch_from_api_for_sankey(s, request)
-    data_df = s.channel.copy()
-    data_df['sum_energy'] = arch_data
-    data_df = cleaning_data(data_df)
-    source, target, value = prepare_source_target_value(labels, s, data_df)
-    return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
-             "sourse_colors": sourse_colors}]
+    request = prepare_arch_request([s.channel.index], start_date, end_date)
+    print(request)
+    # arch_data = getting_arch_from_api_for_sankey(s, request)
+    # data_df = s.channel.copy()
+    # data_df['sum_energy'] = arch_data
+    # data_df = cleaning_data(data_df)
+    # source, target, value = prepare_source_target_value(labels, s, data_df)
+    # return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
+    #          "sourse_colors": sourse_colors}]
 
 
 def sankey_plot(data):
@@ -134,3 +135,11 @@ def sankey_plot(data):
                       )
 
     return fig
+
+
+s = Sedmax('https://demo.sedmax.ru')
+
+username = 'demo'  # os.environ['SEDMAX_USERNAME']
+password = 'demo'  # os.environ['SEDMAX_PASSWORD']
+s.login(username, password)
+load_data(s, "2023-03-01 00:00:00", "2023-03-02 00:00:00")
