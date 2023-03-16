@@ -70,9 +70,7 @@ class ElectricalArchive:
             "sort": "id",
             "sources": devices
         }
-
         data = self.sedmax.get_data(url, request)
-
         return data
 
 #el.get_data(['dev-4_ea_exp', 'dev-3_ea_exp', 'dev-2_ea_exp'], ['30min'], '2021-11-30','2021-12-01')  SDK server

@@ -1,15 +1,35 @@
 import json
 import requests
 import pandas as pd
+import sqlite3
+from contextlib import closing
 
 
 class Sedmax:
-
     def __init__(self, host='http://127.0.0.1'):
         self.host = host
         self.token = None
         self.username = None
         self.password = None
+        self.db = 'sankey_base.db'
+        self.node = self.getting_nodes(self.db)
+        self.channel = self.getting_channel(self.db)
+
+    @classmethod
+    def getting_nodes(cls, db):
+        with closing(sqlite3.connect(db)) as connection:
+            cursor = connection.cursor()
+            cursor.execute("""select node_name, id from node """)
+            node = dict(cursor.fetchall())
+            return node
+
+    @classmethod
+    def getting_channel(cls, db):
+        with closing(sqlite3.connect(db)) as connection:
+            channel_df = pd.read_sql('''SELECT * FROM channel''', connection)
+            channel_df.set_index('sed_id', inplace=True)
+            return channel_df
+
 
     def login(self, username, password):
         r = requests.post(
@@ -109,7 +129,5 @@ class Sedmax:
 
         return pd.DataFrame(r['ti'])
 
-#s.electro.get_electro_data([{'device': 101, 'channel': "ea_imp"}],period="30min",begin='2021-01-24',end='2021-01-26')
- #s.electro.get_data(["dev-101_ea_imp"],period=["30min"],begin='2021-01-24',end='2021-01-26')
-
-
+# s.electro.get_electro_data([{'device': 101, 'channel': "ea_imp"}],period="30min",begin='2021-01-24',end='2021-01-26')
+# s.electro.get_data(["dev-101_ea_imp"],period=["30min"],begin='2021-01-24',end='2021-01-26')

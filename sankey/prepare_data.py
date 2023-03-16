@@ -15,7 +15,8 @@ colors = {
     'node': 'rgba(200,200,200,0.7)',
 }
 
-#generate color
+
+# generate color
 def generate_random_color(size=3):
     r, g, b = np.random.randint(low=10, high=255, size=size)
     return f'rgba({r}, {g}, {b}, 0.2)'
@@ -35,7 +36,8 @@ def load_data(el, start_date, end_date):
     #            'device-102', 'device-103', 'device-104', 'device-105', 'device-106', 'device-107', 'device-202',
     #            'device-201', 'device-113', 'device-116', 'device-117']
 
-    devices = ['device-101', 'device-102', 'device-103', 'device-104', 'device-105', 'device-106', 'device-107', 'device-108',
+    devices = ['device-101', 'device-102', 'device-103', 'device-104', 'device-105', 'device-106', 'device-107',
+               'device-108',
                'device-109', 'device-110', 'device-111', 'device-112', 'device-113', 'device-114', 'device-116',
                'device-117', 'device-201', 'device-202']
 
@@ -44,8 +46,8 @@ def load_data(el, start_date, end_date):
     req = {
         "begin": start_date,
         "end": end_date,
-        #"function": "sum",
-        #"groupby": "30m",
+        # "function": "sum",
+        # "groupby": "30m",
         "groupby": "off",
         "nodes": channels
     }
@@ -62,7 +64,7 @@ def load_data(el, start_date, end_date):
 
     df.columns = devices
 
-    #tree = el.devices_tree()
+    # tree = el.devices_tree()
 
     device_list = s.get_data(s.host + '/sedmax/archive/channels_tree', {"treeType": "devices"})
     device_list = pd.DataFrame(device_list['tree'])
@@ -73,10 +75,10 @@ def load_data(el, start_date, end_date):
     parents = tree.parent.unique()
 
     names = tree.name.values.tolist()
-    #names.append('object-0')
+    # names.append('object-0')
     map_dict = tree.id.values.tolist()
-    #map_dict.append('object-0')
-    map_dict = dict([(v,k) for (k,v) in enumerate(map_dict)])
+    # map_dict.append('object-0')
+    map_dict = dict([(v, k) for (k, v) in enumerate(map_dict)])
 
     power_data = df.sum()
     # power_data.index = [x.split('_')[0].replace('dev', 'device') for x in power_data.index]
@@ -110,6 +112,7 @@ def load_data(el, start_date, end_date):
         {'dev': 6, 'children': [24]},
         {'dev': 12, 'children': [21]},
     ]
+
     # devices = ['device-101', 'device-102', 'device-103', 'device-104',
     #           'device-105', 'device-106', 'device-107', 'device-108',
     #            'device-109', 'device-110', 'device-111', 'device-112',
@@ -135,12 +138,11 @@ def load_data(el, start_date, end_date):
     value = []
     sourse_colors = []
     link_colors = []
-    dev = {i+1:generate_random_color() for i in range(len(map_dict))}
+    dev = {i + 1: generate_random_color() for i in range(len(map_dict))}
     # for i in map_dict:
     #     print(i)
     #     sourse_colors.append(dev[map_dict[i]])
     # pass
-
 
     for record in records:
         children = record['children']
@@ -176,17 +178,16 @@ def load_data(el, start_date, end_date):
         target.append(children)
         value.append(values)
 
-
     source = flatten(source)
     target = flatten(target)
     value = flatten(value)
     labels = names
 
-    return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors, "sourse_colors": sourse_colors}]
+    return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
+             "sourse_colors": sourse_colors}]
 
 
 def sankey_plot(data):
-
     fig = go.Figure(go.Sankey(
         valuesuffix=" кВтч",
         node=dict(
@@ -209,10 +210,10 @@ def sankey_plot(data):
     fig.update_layout(height=700,
                       font_color=colors['graph_font'],
                       font_size=10,
-                      #title_text='Электроснабжение офиса. Активная электроэнергия',
-                      #plot_bgcolor=colors['plot_area'],
+                      # title_text='Электроснабжение офиса. Активная электроэнергия',
+                      # plot_bgcolor=colors['plot_area'],
                       paper_bgcolor=colors['plot_background'],
-                      #margin=dict(l=20, r=20, b=30, t=30, pad=1),
+                      # margin=dict(l=20, r=20, b=30, t=30, pad=1),
                       )
 
     return fig
