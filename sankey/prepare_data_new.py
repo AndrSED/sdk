@@ -23,13 +23,15 @@ def generate_random_color(size=3):
 
 def prepare_arch_request(devices, start_time, end_time) -> dict:
     channels_recive = ['el-dev-' + str(dev) + '-ea_imp-30m' for dev in devices]
-    # channels_trans = ['el-dev-' + str(dev) + '-ea_exp-30m' for dev in devices]
-    return {
-        # "channels": channels_recive + channels_trans,
-        "channels": channels_recive,
+    channels_trans = ['el-dev-' + str(dev) + '-ea_exp-30m' for dev in devices]
+    req = {
+        "channels": channels_recive + channels_trans,
+        # "channels": channels_recive,
         "begin": start_time,
         "end": end_time,
     }
+    print(req)
+    return req
 
 
 def getting_arch_from_api_for_sankey(s: Sedmax, req) -> dict:
@@ -92,14 +94,17 @@ def geberate_link_color() -> list:
 
 def load_data(s, start_date, end_date):
     sourse_colors = []
-    link_colors = []    # Доделать цвет линков
+    link_colors = []  # Доделать цвет линков
     labels = prepare_label(s)
-    request = prepare_arch_request([s.channel.index[1]], start_date, end_date)
+    request = prepare_arch_request([s.channel.index], start_date, end_date)
     arch_data = getting_arch_from_api_for_sankey(s, request)
     data_df = s.channel.copy()
     data_df['sum_energy'] = arch_data
     data_df = cleaning_data(data_df)
     source, target, value = prepare_source_target_value(labels, s, data_df)
+    print(source)
+    print(target)
+    print(value)
     return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
              "sourse_colors": sourse_colors}]
 
