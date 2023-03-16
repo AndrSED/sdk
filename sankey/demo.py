@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
 from sdk import SedmaxHeader, Sedmax, ElectricalArchive
-from sankey.prepare_data import load_data, sankey_plot
+from sankey.prepare_data_new import load_data, sankey_plot
 
 # Create a dash application
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
