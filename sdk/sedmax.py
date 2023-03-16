@@ -21,6 +21,7 @@ class Sedmax:
             cursor = connection.cursor()
             cursor.execute("""select node_name, id from node """)
             node = dict(cursor.fetchall())
+            print(node)
             return node
 
     @classmethod
@@ -28,6 +29,7 @@ class Sedmax:
         with closing(sqlite3.connect(db)) as connection:
             channel_df = pd.read_sql('''SELECT * FROM channel''', connection)
             channel_df.set_index('sed_id', inplace=True)
+            print(channel_df)
             return channel_df
 
 
