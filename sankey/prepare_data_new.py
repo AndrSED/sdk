@@ -22,6 +22,7 @@ def generate_random_color(size=3):
 
 
 def prepare_arch_request(devices, start_time, end_time) -> dict:
+    # print(devices)
     channels_recive = ['el-dev-' + str(dev) + '-ea_imp-30m' for dev in devices]
     channels_trans = ['el-dev-' + str(dev) + '-ea_exp-30m' for dev in devices]
     req = {
@@ -30,7 +31,6 @@ def prepare_arch_request(devices, start_time, end_time) -> dict:
         "begin": start_time,
         "end": end_time,
     }
-    print(req)
     return req
 
 
@@ -40,6 +40,7 @@ def getting_arch_from_api_for_sankey(s: Sedmax, req) -> dict:
     raw_data = s.get_data(url, req)
     for chanel in raw_data:
         dev, _, side = chanel['channel'].lstrip('el-dev-').rstrip('-30m').partition('-')
+        dev = int(dev)
         total = sum([x['v'] for x in chanel['data']])
         if sum_energy.get(dev):
             if side == 'ea_imp':
@@ -55,6 +56,7 @@ def getting_arch_from_api_for_sankey(s: Sedmax, req) -> dict:
                 sum_energy[dev] = -(total)
             else:
                 print(f'Ошибка приёма ')
+    # print(f'{sum_energy=}')
     return sum_energy
 
 
@@ -83,8 +85,8 @@ def prepare_source_target_value(label: list, s: Sedmax, df: DataFrame):
     target = []
     value = df['sum_energy'].tolist()
     for row in df.itertuples():
-        source.append(label_index.index(row[2]))
-        target.append(label_index.index(row[3]))
+        source.append(label_index.index(row[2]) + 1)
+        target.append(label_index.index(row[3]) + 1)
     return source, target, value
 
 
@@ -96,15 +98,20 @@ def load_data(s, start_date, end_date):
     sourse_colors = []
     link_colors = []  # Доделать цвет линков
     labels = prepare_label(s)
-    request = prepare_arch_request([s.channel.index], start_date, end_date)
+    request = prepare_arch_request(s.channel.index.tolist(), start_date, end_date)
+    # print(request)
     arch_data = getting_arch_from_api_for_sankey(s, request)
     data_df = s.channel.copy()
+    # print('чистая дата', data_df)
     data_df['sum_energy'] = arch_data
+    # print('присоединение энергии', data_df)
     data_df = cleaning_data(data_df)
+    # print('после очистки', data_df)
     source, target, value = prepare_source_target_value(labels, s, data_df)
-    print(source)
-    print(target)
-    print(value)
+    # print(f'{source=}')
+    # print(f'{target=}')
+    # print(f'{value=}')
+
     return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
              "sourse_colors": sourse_colors}]
 
