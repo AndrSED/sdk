@@ -2,6 +2,7 @@ import json
 import requests
 import pandas as pd
 import sqlite3
+import numpy as np
 from contextlib import closing
 
 
@@ -13,6 +14,7 @@ class Sedmax:
         self.password = None
         self.db = 'sankey_base.db'
         self.node = self.getting_nodes(self.db)
+        self.node_color = [self.generate_random_color() for _ in range(len(self.node))]
         self.channel = self.getting_channel(self.db)
 
     @classmethod
@@ -32,6 +34,10 @@ class Sedmax:
             # print(channel_df)
             return channel_df
 
+    @classmethod
+    def generate_random_color(cls, size=3):
+        r, g, b = np.random.randint(low=10, high=255, size=size)
+        return f'rgba({r}, {g}, {b}, 0.2)'
 
     def login(self, username, password):
         r = requests.post(

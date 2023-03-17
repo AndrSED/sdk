@@ -1,6 +1,6 @@
 import numpy as np
-import plotly.graph_objects as go
 from pandas import DataFrame
+import plotly.graph_objects as go
 
 from sdk import Sedmax
 
@@ -90,8 +90,8 @@ def prepare_source_target(label: list, s: Sedmax, df: DataFrame):
     return source, target
 
 
-def geberate_link_color() -> list:
-    pass
+def generate_link_color(s: Sedmax, source: list) -> list:
+    return [s.node_color[i] for i in source]
 
 
 def load_data(s, start_date, end_date):
@@ -110,6 +110,7 @@ def load_data(s, start_date, end_date):
     print('после очистки', data_df)
     value = data_df['sum_energy'].tolist()
     source, target = prepare_source_target(labels, s, data_df)
+    link_colors = generate_link_color(s, source)
     print(f'{source=}')
     print(f'{target=}')
     print(f'{value=}')
