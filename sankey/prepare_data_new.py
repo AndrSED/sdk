@@ -57,7 +57,7 @@ def getting_arch_from_api_for_sankey(s: Sedmax, req) -> dict:
                 sum_energy[dev] = -(total)
             else:
                 print(f'Ошибка приёма ')
-    print(f'{sum_energy=}')
+    # print(f'{sum_energy=}')
     return sum_energy
 
 
@@ -101,20 +101,24 @@ def load_data(s, start_date, end_date):
     # print(request)
     arch_data = getting_arch_from_api_for_sankey(s, request)
     data_df = s.channel.copy()
-    print('чистая дата', data_df)
+    # print('чистая дата', data_df)
     data_df['sum_energy'] = data_df.index.map(arch_data)
-    print('присоединение энергии', data_df)
+    # print('присоединение энергии', data_df)
     data_df = cleaning_data(data_df)
-    print('после очистки', data_df)
+    # print('после очистки', data_df)
     value = data_df['sum_energy'].tolist()
     source, target = prepare_source_target(labels, s, data_df)
     link_colors = generate_link_color(s, source)
+    node_colors = s.node_color
     print(f'{source=}')
     print(f'{target=}')
     print(f'{value=}')
+    print(f'{link_colors=}')
+    print(f'{node_colors=}')
+
 
     return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
-             "sourse_colors": s.node_color}]
+             "sourse_colors": node_colors}]
 
 
 def sankey_plot(data):
