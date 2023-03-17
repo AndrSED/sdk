@@ -118,7 +118,7 @@ def load_data(s, start_date, end_date):
 
 
     return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
-             "sourse_colors": node_colors}]
+             "sourse_colors": node_colors, 'node_color': node_colors}]
 
 
 def sankey_plot(data):
@@ -129,7 +129,7 @@ def sankey_plot(data):
             thickness=20,
             line=dict(color="black", width=0.5),
             label=data["labels"],
-            color=colors['node'],
+            color=data['node_color'],
             # color=data["sourse_colors"]
             # x= [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
             # y= [0.2, 0.1, 0.5, 0.7, 0.3, 0.5],
