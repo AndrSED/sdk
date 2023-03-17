@@ -1,5 +1,6 @@
 import sqlite3
 from contextlib import closing
+import sankey.prepare_data_new
 
 db = 'sankey_base.db'
 

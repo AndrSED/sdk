@@ -11,6 +11,4 @@ s.login(username, password)
 
 print(s.node)
 # print(s.channel)
-label_index = [s.node[x] for x in label]
-revers_label = {val: key for key, val in s.node.items()}
-print(revers_label)
+

@@ -16,14 +16,8 @@ s.login(username, password)
 # base_df = pd.read_sql('''SELECT * FROM sankey_config''', con)
 
 
-req = {
-    "channels": [
-        "el-dev-101-ea_imp-30m",
-        "el-dev-110-ea_imp-30m",
-    ],
-    "begin": "2023-01-01 00:00:00",
-    "end": "2023-01-03 23:59:59",
-}
+req = {'channels': ['el-dev-100-ea_imp-30m', 'el-dev-101-ea_imp-30m', 'el-dev-102-ea_imp-30m', 'el-dev-103-ea_imp-30m', 'el-dev-104-ea_imp-30m', 'el-dev-105-ea_imp-30m', 'el-dev-106-ea_imp-30m', 'el-dev-107-ea_imp-30m', 'el-dev-108-ea_imp-30m', 'el-dev-109-ea_imp-30m', 'el-dev-110-ea_imp-30m', 'el-dev-111-ea_imp-30m', 'el-dev-112-ea_imp-30m', 'el-dev-113-ea_imp-30m', 'el-dev-114-ea_imp-30m', 'el-dev-115-ea_imp-30m', 'el-dev-100-ea_exp-30m', 'el-dev-101-ea_exp-30m', 'el-dev-102-ea_exp-30m', 'el-dev-103-ea_exp-30m', 'el-dev-104-ea_exp-30m', 'el-dev-105-ea_exp-30m', 'el-dev-106-ea_exp-30m', 'el-dev-107-ea_exp-30m', 'el-dev-108-ea_exp-30m', 'el-dev-109-ea_exp-30m', 'el-dev-110-ea_exp-30m', 'el-dev-111-ea_exp-30m', 'el-dev-112-ea_exp-30m', 'el-dev-113-ea_exp-30m', 'el-dev-114-ea_exp-30m', 'el-dev-115-ea_exp-30m'], 'begin': '2023-03-01 05:00:00', 'end': '2023-03-03 05:00:00'}
+
 
 url = s.host + '/sedmax/archive_webapi/archive'
 raw_data = s.get_data(url, req)
