@@ -95,8 +95,6 @@ def generate_link_color(s: Sedmax, source: list) -> list:
 
 
 def load_data(s, start_date, end_date):
-    sourse_colors = []
-    link_colors = []  # Доделать цвет линков
     labels = prepare_label(s)
     # print(labels)
     request = prepare_arch_request(s.channel.index.tolist(), start_date, end_date)
@@ -116,7 +114,7 @@ def load_data(s, start_date, end_date):
     print(f'{value=}')
 
     return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
-             "sourse_colors": sourse_colors}]
+             "sourse_colors": s.node_color}]
 
 
 def sankey_plot(data):
