@@ -68,6 +68,9 @@ app.layout = html.Div(children=[
                Input('update_', 'n_clicks')]
               )
 def update_data(start_date, end_date, n):
+    print(start_date)
+    start_date = start_date + ' 00:00:00'
+    end_date = end_date + ' 23:59:59'
     data = load_data(s, start_date, end_date)
     return data
 
