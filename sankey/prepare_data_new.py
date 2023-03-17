@@ -104,7 +104,7 @@ def load_data(s, start_date, end_date):
     arch_data = getting_arch_from_api_for_sankey(s, request)
     data_df = s.channel.copy()
     # print('чистая дата', data_df)
-    data_df['sum_energy'] = arch_data
+    data_df['sum_energy'] = data_df['data_df'].map(arch_data)
     print('присоединение энергии', data_df)
     data_df = cleaning_data(data_df)
     print('после очистки', data_df)
