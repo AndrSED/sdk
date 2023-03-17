@@ -67,7 +67,7 @@ class Sedmax:
 
     def get_data(self, url, request):
         # print(f'{url=}')
-        print(f'{request=}')
+        # print(f'{request=}')
         r = requests.post(
             url,
             json=request,
