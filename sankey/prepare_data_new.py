@@ -79,16 +79,15 @@ def cleaning_data(df: DataFrame) -> DataFrame:
     return df
 
 
-def prepare_source_target_value(label: list, s: Sedmax, df: DataFrame):
+def prepare_source_target(label: list, s: Sedmax, df: DataFrame):
     label_index = [s.node[x] for x in label]
     # print(label_index)
     source = []
     target = []
-    value = df['sum_energy'].tolist()
     for row in df.itertuples():
         source.append(label_index.index(row[2]) + 1)
         target.append(label_index.index(row[3]) + 1)
-    return source, target, value
+    return source, target
 
 
 def geberate_link_color() -> list:
@@ -109,7 +108,8 @@ def load_data(s, start_date, end_date):
     print('присоединение энергии', data_df)
     data_df = cleaning_data(data_df)
     print('после очистки', data_df)
-    source, target, value = prepare_source_target_value(labels, s, data_df)
+    value = data_df['sum_energy'].tolist()
+    source, target = prepare_source_target(labels, s, data_df)
     print(f'{source=}')
     print(f'{target=}')
     print(f'{value=}')
