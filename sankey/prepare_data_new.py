@@ -77,8 +77,8 @@ def prepare_source_target(label: list, s: Sedmax, df: DataFrame):
     source = []
     target = []
     for row in df.itertuples():
-        source.append(label_index.index(row[2]) + 1)
-        target.append(label_index.index(row[3]) + 1)
+        source.append(label_index.index(row[2]))
+        target.append(label_index.index(row[3]))
     return source, target
 
 
@@ -88,7 +88,7 @@ def generate_link_color(s: Sedmax, source: list) -> list:
 
 def load_data(s, start_date, end_date):
     labels = prepare_label(s)
-    # print(labels)
+    print(labels)
     request = prepare_arch_request(s.channel.index.tolist(), start_date, end_date)
     # print(request)
     arch_data = getting_arch_from_api_for_sankey(s, request)
@@ -116,7 +116,7 @@ def sankey_plot(data):
     fig = go.Figure(go.Sankey(
         valuesuffix=" кВтч",
         node=dict(
-            pad=15,
+            pad=25,
             thickness=20,
             line=dict(color="black", width=0.5),
             label=data["labels"],

@@ -63,8 +63,8 @@ app.layout = html.Div(children=[
 
 
 @app.callback([Output(component_id='memory-output', component_property='data')],
-              [Input('date-picker-range', 'start_date'),
-               Input('date-picker-range', 'end_date'),
+              [State('date-picker-range', 'start_date'),
+               State('date-picker-range', 'end_date'),
                Input('update_', 'n_clicks')]
               )
 def update_data(start_date, end_date, n):
