@@ -16,7 +16,8 @@ class Sedmax:
         self.password = None
         self.db = SANKEY_DATABASE
         self.node = self.getting_nodes(self.db)
-        self.node_color = self.getting_color(self.db)
+        self.node_color = self.getting_node_color(self.db)
+        self.link_color = self.getting_link_color(self.db)
         self.channel = self.getting_channel(self.db)
 
     @classmethod
@@ -37,10 +38,17 @@ class Sedmax:
             return channel_df
 
     @classmethod
-    def getting_color(cls, db):
+    def getting_node_color(cls, db):
         with closing(sqlite3.connect(db)) as connection:
-            color_df = pd.read_sql('''select node_color from node''', connection)
-            return color_df['node_color'].tolist()
+            node_color_df = pd.read_sql('''select node_color from node''', connection)
+            return node_color_df['node_color'].tolist()
+
+    @classmethod
+    def getting_link_color(cls, db):
+        with closing(sqlite3.connect(db)) as connection:
+            link_color_df = pd.read_sql('''select link_color from node''', connection)
+            print(link_color_df['link_color'].tolist())
+            return link_color_df['link_color'].tolist()
 
     # @classmethod
     # def generate_random_color(cls, size=3):

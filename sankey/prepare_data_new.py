@@ -86,7 +86,7 @@ def generate_link_color(s: Sedmax, source: list) -> list:
     return [s.node_color[i] for i in source]
 
 
-def load_data(s, start_date, end_date):
+def load_data(s: Sedmax, start_date, end_date):
     labels = prepare_label(s)
     print(labels)
     request = prepare_arch_request(s.channel.index.tolist(), start_date, end_date)
@@ -100,7 +100,7 @@ def load_data(s, start_date, end_date):
     # print('после очистки', data_df)
     value = data_df['sum_energy'].tolist()
     source, target = prepare_source_target(labels, s, data_df)
-    link_colors = generate_link_color(s, source)
+    link_colors = s.link_color
     node_colors = s.node_color
     print(f'{source=}')
     print(f'{target=}')
