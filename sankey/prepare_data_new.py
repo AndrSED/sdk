@@ -116,7 +116,7 @@ def sankey_plot(data):
     fig = go.Figure(go.Sankey(
         valuesuffix=" кВтч",
         node=dict(
-            pad=15,
+            pad=25,
             thickness=20,
             line=dict(color="black", width=0.5),
             label=data["labels"],
