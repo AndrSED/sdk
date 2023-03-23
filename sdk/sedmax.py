@@ -40,7 +40,7 @@ class Sedmax:
     def getting_color(cls, db):
         with closing(sqlite3.connect(db)) as connection:
             color_df = pd.read_sql('''select node_color from node''', connection)
-            return color_df['node_color'].tolist()
+            return color_df['node_color'].apply(lambda x: x[1:-1])
 
     # @classmethod
     # def generate_random_color(cls, size=3):
