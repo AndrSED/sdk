@@ -36,7 +36,7 @@ date_picker = html.Div([
               dcc.DatePickerRange(
                   id='date-picker-range',
                   initial_visible_month=datetime.datetime.now().date(),
-                  start_date=(datetime.datetime.now() - pd.Timedelta(days=30)).date(),
+                  start_date=(datetime.datetime.now() - pd.Timedelta(days=1)).date(),
                   end_date=datetime.datetime.now().date(),
                   # month_format='MM/YYYY',
               )], style={'float': 'right', 'padding': '1px'})

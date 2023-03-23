@@ -31,6 +31,7 @@ def prepare_arch_request(devices, start_time, end_time) -> dict:
         "begin": start_time,
         "end": end_time,
     }
+    # print(req)
     return req
 
 

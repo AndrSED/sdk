@@ -2,6 +2,13 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 .idea/
+settings.py
+testing.py
+testing_2.py
+testing_sqlite.py
+testing_sqlite_2.py
+222.py
+11111sank.py
 
 
 

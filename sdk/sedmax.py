@@ -14,7 +14,7 @@ class Sedmax:
         self.password = None
         self.db = 'sankey_base.db'
         self.node = self.getting_nodes(self.db)
-        self.node_color = [self.generate_random_color() for _ in range(len(self.node))]
+        self.node_color = [self.generate_random_color() for _ in range(len(self.node)+1)]
         self.channel = self.getting_channel(self.db)
 
     @classmethod
