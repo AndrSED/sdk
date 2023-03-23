@@ -3,16 +3,7 @@ from pandas import DataFrame
 import plotly.graph_objects as go
 
 from sdk import Sedmax
-
-colors = {
-    'grid': "#b9b9b9",
-    'graph_font': "#000000",
-    'plot_area': "#ffffff",
-    'plot_background': "#fafafa",
-    'active_link': 'rgba(200,200,200,0.7)',
-    'disabled_link': 'rgba(250,100,100,0.7)',
-    'node': 'rgba(200,200,200,0.7)',
-}
+from settings import SankeyColor
 
 
 # generate color
@@ -117,7 +108,6 @@ def load_data(s, start_date, end_date):
     print(f'{link_colors=}')
     print(f'{node_colors=}')
 
-
     return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
              "sourse_colors": node_colors, 'node_color': node_colors}]
 
@@ -143,12 +133,11 @@ def sankey_plot(data):
             color=data["link_colors"],
         )))
     fig.update_layout(height=700,
-                      font_color=colors['graph_font'],
+                      font_color=SankeyColor.GRAPH_FONT.value,
                       font_size=10,
                       # title_text='Электроснабжение офиса. Активная электроэнергия',
                       # plot_bgcolor=colors['plot_area'],
-                      paper_bgcolor=colors['plot_background'],
+                      paper_bgcolor=SankeyColor.PLOT_BACKGROUND.value,
                       # margin=dict(l=20, r=20, b=30, t=30, pad=1),
                       )
-
     return fig

@@ -5,6 +5,8 @@ import sqlite3
 import numpy as np
 from contextlib import closing
 
+from settings import SANKEY_DATABASE
+
 
 class Sedmax:
     def __init__(self, host='http://127.0.0.1'):
@@ -12,7 +14,7 @@ class Sedmax:
         self.token = None
         self.username = None
         self.password = None
-        self.db = 'sankey_base.db'
+        self.db = SANKEY_DATABASE
         self.node = self.getting_nodes(self.db)
         self.node_color = [self.generate_random_color() for _ in range(len(self.node)+1)]
         self.channel = self.getting_channel(self.db)
