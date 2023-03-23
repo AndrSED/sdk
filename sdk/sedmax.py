@@ -31,7 +31,7 @@ class Sedmax:
     @classmethod
     def getting_channel(cls, db):
         with closing(sqlite3.connect(db)) as connection:
-            channel_df = pd.read_sql('''SELECT * FROM channel''', connection)
+            channel_df = pd.read_sql('''SELECT sed_id, channel_name, start_node, end_node FROM channel''', connection)
             channel_df.set_index('sed_id', inplace=True)
             # print(channel_df)
             return channel_df
