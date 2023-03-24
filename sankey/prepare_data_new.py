@@ -88,7 +88,7 @@ def generate_link_color(s: Sedmax, source: list) -> list:
 
 def load_data(s: Sedmax, start_date, end_date):
     labels = prepare_label(s)
-    print(labels)
+    # print(labels)
     request = prepare_arch_request(s.channel.index.tolist(), start_date, end_date)
     # print(request)
     arch_data = getting_arch_from_api_for_sankey(s, request)
@@ -103,11 +103,11 @@ def load_data(s: Sedmax, start_date, end_date):
     # link_colors = s.link_color
     node_colors = s.node_color
     link_colors = generate_link_color(s, source)
-    print(f'{source=}')
-    print(f'{target=}')
-    print(f'{value=}')
-    print(f'{link_colors=}')
-    print(f'{node_colors=}')
+    # print(f'{source=}')
+    # print(f'{target=}')
+    # print(f'{value=}')
+    # print(f'{link_colors=}')
+    # print(f'{node_colors=}')
 
     return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
              "sourse_colors": node_colors, 'node_color': node_colors}]
@@ -117,7 +117,7 @@ def sankey_plot(data):
     fig = go.Figure(go.Sankey(
         valuesuffix=" кВтч",
         node=dict(
-            pad=25,
+            pad=45,
             thickness=20,
             line=dict(color="black", width=0.5),
             label=data["labels"],
