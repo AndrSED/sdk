@@ -9,6 +9,9 @@ from settings import SANKEY_DATABASE
 
 
 class Sedmax:
+    __node_visibility = 1
+    __link_visibility = 0.2
+
     def __init__(self, host='http://127.0.0.1'):
         self.host = host
         self.token = None
@@ -17,7 +20,7 @@ class Sedmax:
         self.db = SANKEY_DATABASE
         self.node = self.getting_nodes(self.db)
         self.channel = self.getting_channel(self.db)
-        self.node_color = self.getting_node_color(self.db)
+        self.node_color = self.prepare_node_color(self.db)
         self.link_color = self.prepare_link_color(self.node_color)
 
     @classmethod
@@ -38,6 +41,16 @@ class Sedmax:
             return channel_df
 
     @classmethod
+    def prepare_node_color(cls, db):
+        with closing(sqlite3.connect(db)) as connection:
+            cursor = connection.cursor()
+            cursor.execute("""select node_color from node """)
+            node_raw = list(cursor.fetchall())
+            node_color = ['rgba(' + color[0] + ',' + str(cls.__node_visibility) + ')' for color in node_raw]
+            # print(node_color)
+            return node_color
+
+    @classmethod
     def getting_node_color(cls, db):
         with closing(sqlite3.connect(db)) as connection:
             node_color_df = pd.read_sql('''select node_color from node''', connection)
@@ -46,7 +59,7 @@ class Sedmax:
 
     @classmethod
     def prepare_link_color(cls, node_color: list[str]):
-        link_colors= [color.replace(',0.2)', ',1)') for color in node_color]
+        link_colors = [color.rpartition(',')[0] + ',' + str(cls.__link_visibility) + ')' for color in node_color]
         # print(link_colors)
         return link_colors
 
