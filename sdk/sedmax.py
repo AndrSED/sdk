@@ -16,9 +16,9 @@ class Sedmax:
         self.password = None
         self.db = SANKEY_DATABASE
         self.node = self.getting_nodes(self.db)
-        self.node_color = self.getting_node_color(self.db)
-        self.link_color = self.getting_link_color(self.db)
         self.channel = self.getting_channel(self.db)
+        self.node_color = self.getting_node_color(self.db)
+        self.link_color = self.prepare_link_color(self.node_color)
 
     @classmethod
     def getting_nodes(cls, db):
@@ -41,14 +41,21 @@ class Sedmax:
     def getting_node_color(cls, db):
         with closing(sqlite3.connect(db)) as connection:
             node_color_df = pd.read_sql('''select node_color from node''', connection)
+            # print('ноды', node_color_df['node_color'].tolist())
             return node_color_df['node_color'].tolist()
 
     @classmethod
-    def getting_link_color(cls, db):
-        with closing(sqlite3.connect(db)) as connection:
-            link_color_df = pd.read_sql('''select link_color from node''', connection)
-            print(link_color_df['link_color'].tolist())
-            return link_color_df['link_color'].tolist()
+    def prepare_link_color(cls, node_color: list[str]):
+        link_colors= [color.replace(',0.2)', ',1)') for color in node_color]
+        # print(link_colors)
+        return link_colors
+
+    # @classmethod
+    # def getting_link_color(cls, db):
+    #     with closing(sqlite3.connect(db)) as connection:
+    #         link_color_df = pd.read_sql('''select link_color from node''', connection)
+    #         print(link_color_df['link_color'].tolist())
+    #         return link_color_df['link_color'].tolist()
 
     # @classmethod
     # def generate_random_color(cls, size=3):

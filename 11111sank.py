@@ -1,37 +1,4 @@
-import plotly.graph_objects as go
-import requests, json
+qq = ['rgba(255,0,255,0.2)', 'rgba(100,149,237,0.2)', 'rgba(0,206,209,0.2)', 'rgba(123,104,238,0.2)', 'rgba(176,196,222,0.2)', 'rgba(139,10,80,0.2)', 'rgba(0,255,0,0.2)', 'rgba(143,188,143,0.2)', 'rgba(189,183,107,0.2)', 'rgba(255,250,205,0.2)', 'rgba(255,215,0,0.2)', 'rgba(238,221,130,0.2)', 'rgba(0,255,127,0.2)', 'rgba(0,0,205,0.2)', 'rgba(0,255,255,0.2)']
 
-url = 'https://raw.githubusercontent.com/plotly/plotly.js/master/test/image/mocks/sankey_energy.json'
-response = requests.get(url)
-data = response.json()
 
-# override gray link colors with 'source' colors
-opacity = 0.4
-# change 'magenta' to its 'rgba' value to add opacity
-data['data'][0]['node']['color'] = ['rgba(255,0,255, 0.8)' if color == "magenta" else color for color in data['data'][0]['node']['color']]
-data['data'][0]['link']['color'] = [data['data'][0]['node']['color'][src].replace("0.8", str(opacity))
-                                    for src in data['data'][0]['link']['source']]
-
-fig = go.Figure(data=[go.Sankey(
-    valueformat = ".0f",
-    valuesuffix = "TWh",
-    # Define nodes
-    node = dict(
-      pad = 25,
-      thickness = 15,
-      line = dict(color = "black", width = 0.5),
-      label =  data['data'][0]['node']['label'],
-      color =  data['data'][0]['node']['color']
-    ),
-    # Add links
-    link = dict(
-      source =  data['data'][0]['link']['source'],
-      target =  data['data'][0]['link']['target'],
-      value =  data['data'][0]['link']['value'],
-      label =  data['data'][0]['link']['label'],
-      color =  data['data'][0]['link']['color']
-))])
-
-fig.update_layout(title_text="Energy forecast for 2050<br>Source: Department of Energy & Climate Change, Tom Counsell via <a href='https://bost.ocks.org/mike/sankey/'>Mike Bostock</a>",
-                  font_size=10)
-fig.show()
+print([color.replace(',0.2)', ',1)') for color in qq])
