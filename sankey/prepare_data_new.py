@@ -1,3 +1,5 @@
+import datetime
+
 import numpy as np
 from pandas import DataFrame
 import plotly.graph_objects as go
@@ -6,50 +8,52 @@ from sdk import Sedmax
 from settings import SankeyColor
 
 
-# generate color
-def generate_random_color(size=3):
-    r, g, b = np.random.randint(low=10, high=255, size=size)
-    return f'rgba({r}, {g}, {b}, 0.2)'
-
-
-def prepare_arch_request(devices, start_time, end_time) -> dict:
-    # print(devices)
+def prepare_arch_request(devices, start_time: datetime, end_time: datetime) -> list[dict]:
+    thirty_min_count = 10000 // (len(devices) * 2)
+    start = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+    end = datetime.datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S")
+    dif_time = end - start
+    total_count_30min = int(dif_time.total_seconds() // 1800 * len(devices) * 2)
+    asks = (total_count_30min // 10000) + 1
+    thirty_min_timestamps = [start + i * datetime.timedelta(minutes=thirty_min_count * 30) for i in range(asks)]
+    thirty_min_timestamps.append(end_time)
     channels_recive = ['el-dev-' + str(dev) + '-ea_imp-30m' for dev in devices]
     channels_trans = ['el-dev-' + str(dev) + '-ea_exp-30m' for dev in devices]
-    req = {
-        "channels": channels_recive + channels_trans,
-        # "channels": channels_recive,
-        "begin": start_time,
-        "end": end_time,
-    }
-    # print(req)
-    return req
+    final_req = []
+    for i in range(len(thirty_min_timestamps) - 1):
+        req = {
+            "channels": channels_recive + channels_trans,
+            "begin": str(thirty_min_timestamps[i]),
+            "end": str(thirty_min_timestamps[i+1]),
+        }
+        final_req.append(req)
+    print(final_req)
+    return final_req
 
 
-def getting_arch_from_api_for_sankey(s: Sedmax, req) -> dict:
+def getting_arch_from_api_for_sankey(s: Sedmax, req: list[dict]) -> dict:
     sum_energy = {}
     url = s.host + '/sedmax/archive_webapi/archive'
-    raw_data = s.get_data(url, req)
-    for chanel in raw_data:
-        dev, _, side = chanel['channel'].lstrip('el-dev-').rstrip('-30m').partition('-')
-        dev = int(dev)
-        total = sum([x['v'] for x in chanel['data']])
-        # print(f'{dev=} {total=} {side=}')
-        if sum_energy.get(dev):
-            if side == 'ea_imp':
-                sum_energy[dev] = sum_energy[dev] + total
-            elif side == 'ea_exp':
-                sum_energy[dev] = sum_energy[dev] - total
+    for ask in req:
+        raw_data = s.get_data(url, ask)
+        for chanel in raw_data:
+            dev, _, side = chanel['channel'].lstrip('el-dev-').rstrip('-30m').partition('-')
+            dev = int(dev)
+            total = sum([x['v'] for x in chanel['data']])
+            if sum_energy.get(dev):
+                if side == 'ea_imp':
+                    sum_energy[dev] = sum_energy[dev] + total
+                elif side == 'ea_exp':
+                    sum_energy[dev] = sum_energy[dev] - total
+                else:
+                    print(f'Ошибка приёма ')
             else:
-                print(f'Ошибка приёма ')
-        else:
-            if side == 'ea_imp':
-                sum_energy[dev] = total
-            elif side == 'ea_exp':
-                sum_energy[dev] = -(total)
-            else:
-                print(f'Ошибка приёма ')
-    # print(f'{sum_energy=}')
+                if side == 'ea_imp':
+                    sum_energy[dev] = total
+                elif side == 'ea_exp':
+                    sum_energy[dev] = -(total)
+                else:
+                    print(f'Ошибка приёма ')
     return sum_energy
 
 
@@ -73,7 +77,6 @@ def cleaning_data(df: DataFrame) -> DataFrame:
 
 def prepare_source_target(label: list, s: Sedmax, df: DataFrame):
     label_index = [s.node[x] for x in label]
-    # print(label_index)
     source = []
     target = []
     for row in df.itertuples():
@@ -86,28 +89,17 @@ def generate_link_color(s: Sedmax, source: list) -> list:
     return [s.link_color[i] for i in source]
 
 
-def load_data(s: Sedmax, start_date, end_date):
+def load_data(s: Sedmax, start_date: datetime, end_date: datetime) -> list[dict]:
     labels = prepare_label(s)
-    # print(labels)
     request = prepare_arch_request(s.channel.index.tolist(), start_date, end_date)
-    # print(request)
     arch_data = getting_arch_from_api_for_sankey(s, request)
     data_df = s.channel.copy()
-    # print('чистая дата', data_df)
     data_df['sum_energy'] = data_df.index.map(arch_data)
-    # print('присоединение энергии', data_df)
     data_df = cleaning_data(data_df)
-    # print('после очистки', data_df)
     value = data_df['sum_energy'].tolist()
     source, target = prepare_source_target(labels, s, data_df)
-    # link_colors = s.link_color
     node_colors = s.node_color
     link_colors = generate_link_color(s, source)
-    # print(f'{source=}')
-    # print(f'{target=}')
-    # print(f'{value=}')
-    # print(f'{link_colors=}')
-    # print(f'{node_colors=}')
 
     return [{"source": source, "target": target, "value": value, "labels": labels, "link_colors": link_colors,
              "sourse_colors": node_colors, 'node_color': node_colors}]
